@@ -6,15 +6,23 @@ var atnd         = require('../lib/atnd')
 	, doorkeeper   = require('../lib/doorkeeper')
 	, eventService = require('../lib/event-service');
 
-var keywords = [];
+var keywords = ['ヒカリエ']
+	, have
+	, placeFilter;
+
+have = function(string, key) {
+	return string.toLowerCase().indexOf(key) > -1;
+}
+
+placeFilter = function(string) {
+	return (have(string, 'ヒカリエ') || have(string, '東京都渋谷区渋谷2-21-1')) && 
+				 (have(string, 'dena') || have(string, 'ディー・エヌ・エー'));
+};
 
 describe('Event', function() {
 	describe('Atnd', function() {
 		it('should return events', function(done) {
 			atnd(keywords, function(err, events) {
-				if (events.length) {
-					console.log(events);
-				}
 				events.should.not.equal(undefined);
 				done();
 			});
@@ -23,9 +31,6 @@ describe('Event', function() {
 	describe('Connpass', function() {
 		it('should return events', function(done) {
 			connpass(keywords, function(err, events) {
-				if (events.length) {
-					console.log(events);
-				}
 				events.should.not.equal(undefined);
 				done();
 			});
@@ -34,9 +39,6 @@ describe('Event', function() {
 	describe('Zusaar', function() {
 		it('should return events', function(done) {
 			zusaar(keywords, function(err, events) {
-				if (events.length) {
-					console.log(events);
-				}
 				events.should.not.equal(undefined);
 				done();
 			});
@@ -45,9 +47,6 @@ describe('Event', function() {
 	describe('Doorkeeper', function() {
 		it('should return events', function(done) {
 			doorkeeper(keywords, function(err, events) {
-				if (events.length) {
-					console.log(events);
-				}
 				events.should.not.equal(undefined);
 				done();
 			});
@@ -55,7 +54,10 @@ describe('Event', function() {
 	});
 	describe('All Service', function() {
 		it('should return events', function(done) {
-			eventService(keywords, function(err, events) {
+			eventService({
+				keywords: keywords,
+				placeFilter: placeFilter
+			}, function(err, events) {
 				if (events.length) {
 					console.log(events);
 				}
